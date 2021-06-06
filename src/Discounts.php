@@ -13,6 +13,7 @@ use Aifst\Discount\Contracts\{Discountable,
 };
 use Aifst\Discount\Exceptions\DiscountHandlerNotExists;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class Discounts
