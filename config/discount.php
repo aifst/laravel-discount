@@ -13,6 +13,7 @@ return [
         'discount_statistics' => 'discount_statistics',
         'discount_models' => 'discount_models',
         'discount_rules' => 'discount_rules',
+        'discount_handlers' => 'discount_handlers'
     ],
     'column_names' => [
         'model_morph_key' => 'model_id',
