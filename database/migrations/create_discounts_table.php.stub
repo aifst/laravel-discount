@@ -1,0 +1,103 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateDiscountsTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create(config('discount.table_names.discounts'), function (Blueprint $table) {
+            $table->id();
+            $table->string('code')->unique()->nullable()->comment('Promo code');
+            $table->string('name')->nullable();
+            $table->integer('parent_id')->nullable()->comment('For group discounts');
+            $table->unsignedBigInteger('start_at')->nullable()->comment('Active from date');
+            $table->unsignedBigInteger('end_at')->nullable()->comment('Active to date');
+            $table->boolean('active')->nullable();
+//            $table->integer('count_children')->nullable()->comment('Count sub discounts in group');
+            $table->boolean('is_automatic')->default(false);
+            $table->integer('usage_limit')->nullable();
+            $table->integer('value')->nullable();
+            $table->tinyInteger('value_type')->nullable();
+            $table->jsonb('data')->nullable();
+            $table->string('handlers')->nullable()->index();
+            $table->string('owner_model_type')
+                ->nullable()
+                ->comment('For Site|Project|etc.');
+            $table->unsignedBigInteger('owner_model_id')
+                ->nullable();
+
+            $table->timestamps();
+
+            $table->foreign('parent_id')
+                ->references('id')
+                ->on('discounts');
+
+            $table->index(['owner_model_type', 'owner_model_id']);
+        });
+
+        Schema::create(config('discount.table_names.discount_models'), function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('discount_id');
+            $table->string('model_type');
+            $table->unsignedBigInteger('model_id');
+            $table->timestamps();
+
+            $table->foreign('discount_id')
+                ->references('id')
+                ->on('discounts')
+                ->cascadeOnDelete();
+        });
+
+        Schema::create(config('discount.table_names.discount_statistics'), function (Blueprint $table) {
+            $table->unsignedBigInteger('discount_id');
+            $table->string('model_type')->comment('Like user model');
+            $table->unsignedBigInteger('model_id');
+            $table->integer('count')->comment('Added but not applied/paid');
+            $table->integer('count_used')->comment('Count of used');
+            $table->timestamps();
+
+            $table->foreign('discount_id')
+                ->references('id')
+                ->on('discounts')
+                ->cascadeOnDelete();
+        });
+
+        Schema::create(config('discount.table_names.discount_rules'), function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('discount_id');
+            $table->string('hash');//->unique();
+
+            $table->foreign('discount_id')
+                ->references('id')
+                ->on('discounts')
+                ->cascadeOnDelete();
+        });
+
+        Schema::create(config('discount.table_names.discount_handlers'), function (Blueprint $table) {
+            $table->id();
+            $table->string('handlers')->unique();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists(config('discount.table_names.discount_handlers'));
+        Schema::dropIfExists(config('discount.table_names.discount_rules'));
+        Schema::dropIfExists(config('discount.table_names.discount_statistics'));
+        Schema::dropIfExists(config('discount.table_names.discount_models'));
+        Schema::dropIfExists(config('discount.table_names.discounts'));
+    }
+}

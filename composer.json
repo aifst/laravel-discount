@@ -1,0 +1,55 @@
+{
+    "name": "aifst/laravel-discount",
+    "description": "Discount package for Laravel 5.4 and up",
+    "keywords": [
+        "aifst",
+        "laravel",
+        "discount"
+    ],
+    "homepage": "https://github.com/aifst/laravel-discount",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sergei Yarmolyuk",
+            "email": "sergei.yarmolyuk@gmail.com"
+        }
+    ],
+    "require": {
+        "php" : "^7.4|^8.0",
+        "illuminate/database": "^6.0|^7.0|^8.0",
+        "nesbot/carbon": "^2.31",
+        "ext-json": "*"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^4.0|^5.0|^6.0",
+        "phpunit/phpunit": "^8.0|^9.0",
+        "predis/predis": "^1.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Aifst\\Discount\\": "src"
+        },
+        "files": [
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Aifst\\Discount\\Test\\": "tests"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Aifst\\Discount\\DiscountServiceProvider"
+            ]
+        }
+    },
+    "scripts": {
+        "test": "phpunit"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
