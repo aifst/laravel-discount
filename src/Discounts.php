@@ -2,6 +2,7 @@
 
 namespace Aifst\Discount;
 
+use Aifst\Discount\Exceptions\PromoDiscountNotExists;
 use Aifst\Discount\Support\DiscountCollection;
 use Aifst\Discount\Support\DiscountHandlers;
 use Carbon\Carbon;
@@ -67,6 +68,19 @@ class Discounts
                 return $result;
             });
 
+        if (!$discounts && config('discount.promo.not_found_exception')) {
+            throw new PromoDiscountNotExists();
+        }
+
+        if (config('discount.promo.auto_higher_priority')) {
+            $auto = $this->auto($client, $discountable);
+//            print_R($auto);exit;
+            if($auto->count()) {
+                $discounts = !$discounts ? $auto :
+                    ($discounts->first()->value < $auto->first()->value ? $auto : $discounts);
+            }
+        }
+
         return new DiscountCollection($discounts);
     }
 
@@ -95,7 +109,7 @@ class Discounts
         /**
          * @TODO realize many discounts logic
          */
-        return new DiscountCollection([$discounts->first()]);
+        return new DiscountCollection($discounts->count() ? [$discounts->first()] : []);
     }
 
     /**

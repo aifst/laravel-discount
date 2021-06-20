@@ -22,6 +22,10 @@ return [
         Aifst\Discount\Support\Handlers\Accumulative::class,
         Aifst\Discount\Support\Handlers\Clients::class,
     ],
+    'promo' => [
+        'not_found_exception' => false,
+        'auto_higher_priority' => true,
+    ],
     'default_type' => 1,
     'types' => [
         'percent' => 1,
